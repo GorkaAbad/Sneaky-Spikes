@@ -1,6 +1,6 @@
 # Sneaky-Spikes
 
-Code for the paper "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data" submited at USENIX'23.
+Code for the paper "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data".
 
 Guide to the code is available [here](how_to.md).
 
