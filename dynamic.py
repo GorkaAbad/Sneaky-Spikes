@@ -1,22 +1,19 @@
 import torch
 import argparse
 import numpy as np
-from models import get_model, Autoencoder, AutoencoderMNIST
-from poisoned_dataset import create_backdoor_data_loader
-from utils import loss_picker, optimizer_picker, backdoor_model_trainer, save_experiments
+from models import get_model, Autoencoder, AutoencoderMNIST, AutoencoderCaltech
+from utils import loss_picker, optimizer_picker
 from datasets import get_dataset
-from torch.cuda import amp
 from spikingjelly.activation_based import functional, neuron
 from tqdm import tqdm
 import torch.nn.functional as F
-from spikingjelly.activation_based import layer, surrogate, neuron
-from copy import deepcopy
-import matplotlib.pyplot as plt
+from spikingjelly.activation_based import surrogate, neuron
 from spikingjelly.datasets import play_frame
 import os
 import csv
 import random
 import cupy
+from torchvision import transforms
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str,
@@ -65,16 +62,7 @@ def clip_image(image, noise, eps):
     noise shape: [T, N, C, H, W]
     image shape: [T, N, C, H, W]
     '''
-    # Get the l infinity norm of the noise and the image
-    # print(noise.shape)
-    # linf = torch.linalg.norm(noise)
-    # print(linf)
-    # noise = torch.clamp(noise, min=0, max=(image.max().item() + eps))
-    # print("   ")
-    # linf = torch.linalg.norm(noise, ord=np.inf)
-    # noise = noise * eps / linf
     noise = noise * eps
-    # return torch.clamp(image + noise, 0, 1)
     return noise + image
 
 
@@ -93,6 +81,11 @@ def train(args, atkmodel, tgtmodel, clsmodel, device, train_loader,
     except:
         n_classes = 10
 
+    crop = None
+    if args.dataset == 'caltech':
+        n_classes = 101
+        crop = transforms.CenterCrop((180, 180))
+
     bk_label_one_hot = F.one_hot(torch.tensor(
         args.trigger_label).long(), n_classes).float()
 
@@ -108,6 +101,9 @@ def train(args, atkmodel, tgtmodel, clsmodel, device, train_loader,
         label = label.to(device)
         bk_label = bk_label_one_hot.repeat(len(label), 1).to(device)
         label = F.one_hot(label, n_classes).float()
+
+        if crop is not None:
+            frame = crop(frame)
 
         # Create bk data
         noise = tgtmodel(frame)
@@ -168,12 +164,6 @@ def train(args, atkmodel, tgtmodel, clsmodel, device, train_loader,
         clsoptimizer.zero_grad()
         loss.backward()
         clsoptimizer.step()
-        # atkdata = torch.clamp(frame + noise, 0, 1)
-        # output = clsmodel(atkdata).mean(0)
-        # loss = criterion(output, label)
-        # clsoptimizer.zero_grad()
-        # loss.backward()
-        # clsoptimizer.step()
 
     # Save some frames
     x = noise[:, 0, :, :, :].clone().detach() * args.beta
@@ -204,10 +194,16 @@ def test(args, atkmodel, scratchmodel, device,
     scratchmodel.train()
     testoptimizer, _ = optimizer_picker(args.optim, scratchmodel.parameters(),
                                         lr=args.lr, momentum=args.momentum, epochs=args.epochs)
+
     try:
         n_classes = len(train_loader.dataset.classes)
     except:
         n_classes = 10
+
+    crop = None
+    if args.dataset == 'caltech':
+        n_classes = 101
+        crop = transforms.CenterCrop((180, 180))
 
     bk_label_one_hot = F.one_hot(torch.tensor(
         args.trigger_label).long(), n_classes).float()
@@ -220,6 +216,9 @@ def test(args, atkmodel, scratchmodel, device,
             label = label.to(device)
             bk_label = bk_label_one_hot.repeat(len(label), 1).to(device)
             label = F.one_hot(label, n_classes).float()
+
+            if crop is not None:
+                frame = crop(frame)
 
             testoptimizer.zero_grad()
             with torch.no_grad():
@@ -249,6 +248,9 @@ def test(args, atkmodel, scratchmodel, device,
             label = label.to(device)
             bk_label = bk_label_one_hot.repeat(len(label), 1).to(device)
             label = F.one_hot(label, n_classes).float()
+
+            if crop is not None:
+                frame = crop(frame)
 
             output = scratchmodel(frame).mean(0)
             loss = criterion(output, label)
@@ -292,6 +294,11 @@ def evaluate(model, test_loader, criterion, device):
     except:
         n_classes = 10
 
+    crop = None
+    if args.dataset == 'caltech':
+        n_classes = 101
+        crop = transforms.CenterCrop((180, 180))
+
     with torch.no_grad():
         for frame, label in tqdm(test_loader):
             frame = frame.to(device)
@@ -299,6 +306,10 @@ def evaluate(model, test_loader, criterion, device):
             frame = frame.transpose(0, 1)
             label = label.to(device)
             label = F.one_hot(label, n_classes).float()
+
+            if crop is not None:
+                frame = crop(frame)
+
             out_fr = model(frame).mean(0)
             loss = criterion(out_fr, label)
 
@@ -337,6 +348,7 @@ def main():
         os.makedirs(path_figs)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # device = torch.device('cpu')
     print(f'Using device {device}')
 
     clsmodel = get_model(args.dataset, args.T)
@@ -345,6 +357,12 @@ def main():
                                     surrogate_function=surrogate.ATan(),  detach_reset=True)
         tgtmodel = AutoencoderMNIST(spiking_neuron=neuron.IFNode,
                                     surrogate_function=surrogate.ATan(),  detach_reset=True)
+
+    elif args.dataset == 'caltech':
+        atkmodel = AutoencoderCaltech(spiking_neuron=neuron.IFNode,
+                                      surrogate_function=surrogate.ATan(),  detach_reset=True)
+        tgtmodel = AutoencoderCaltech(spiking_neuron=neuron.IFNode,
+                                      surrogate_function=surrogate.ATan(),  detach_reset=True)
 
     else:
         atkmodel = Autoencoder(spiking_neuron=neuron.IFNode,
@@ -413,23 +431,6 @@ def main():
         list_clean.append(test_acc_clean)
         list_ae.append(atkmodel.state_dict())
         list_cls.append(clsmodel.state_dict())
-        # test_loss, test_acc = evaluate(
-        #     scratchmodel, test_loader, criterion, device)
-        # print('Test clean accuracy: {:.2f}%'.format(test_acc * 100))
-        # if test_acc_clean >= best_clean_acc or (test_acc_clean >= (best_clean_acc-0.1) and best_bk_acc <= test_bk_acc):
-        #     best_bk_acc = test_bk_acc
-        #     best_epoch = epoch
-        #     best_clean_acc = test_acc_clean
-        #     best_ae = atkmodel.state_dict()
-        #     best_cls = clsmodel.state_dict()
-
-        # Instead of this stop criterion, we could use one that maximizes solely the test_acc_clean
-        # if test_acc_clean >= best_clean_acc:
-        #     best_bk_acc = test_bk_acc
-        #     best_epoch = epoch
-        #     best_clean_acc = test_acc_clean
-        #     best_ae = atkmodel.state_dict()
-        #     best_cls = clsmodel.state_dict()
 
         # Print test clean and backdoor accuracy
         print('Test clean accuracy: {:.2f}%, Test backdoor accuracy: {:.2f}%'.format(
