@@ -1,14 +1,12 @@
 import torch.nn.functional as F
 import os
 from spikingjelly.datasets import play_frame
-from PIL import Image
 from datasets import get_dataset
-from tqdm import tqdm
 from torch.utils.data import Dataset, DataLoader
 import torch
 import numpy as np
 import copy
-import itertools
+from torchvision import transforms
 
 
 class PoisonedDataset(Dataset):
@@ -16,12 +14,33 @@ class PoisonedDataset(Dataset):
     def __init__(self, dataset, trigger_label=0, mode='train', epsilon=0.1, pos='top-left', attack_type='static', time_step=16,
                  trigger_size=0.1, dataname='mnist', polarity=0, n_masks=2, least=False, most_polarity=False):
 
-        # Handle special case for CIFAR10
+        # Handle special case for CIFAR10 and Caltech101
         if type(dataset) == torch.utils.data.Subset:
-            targets = torch.Tensor(dataset.dataset.targets)[
-                dataset.indices]
-            data = np.array([i[0] for i in dataset.dataset])
-            data = torch.Tensor(data)[dataset.indices]
+            path_targets = os.path.join(
+                'data', dataname, f'{time_step}_{mode}_targets.pt')
+            path_data = os.path.join(
+                'data', dataname, f'{time_step}_{mode}_data.pt')
+
+            if os.path.exists(path_targets) and os.path.exists(path_data):
+                targets = torch.load(path_targets)
+                data = torch.load(path_data)
+            else:
+
+                targets = torch.Tensor(dataset.dataset.targets)[
+                    dataset.indices]
+                if dataset.dataset[0][0].shape[-1] != dataset.dataset[0][0].shape[-2]:
+                    crop = transforms.CenterCrop(
+                        min(dataset.dataset[0][0].shape[-1], dataset.dataset[0][0].shape[-2]))
+                    data = np.array([crop(torch.Tensor(i[0])).numpy()
+                                    for i in dataset.dataset])
+                else:
+                    data = np.array([i[0] for i in dataset.dataset])
+
+                data = torch.Tensor(data)[dataset.indices]
+
+                torch.save(targets, path_targets)
+                torch.save(data, path_data)
+
             dataset = dataset.dataset
             self.data = data
             self.targets = targets
@@ -272,7 +291,7 @@ class PoisonedDataset(Dataset):
         # if least is True, we will inject the trigger in the mask with the least value
 
         # Get the maximum value of each mask
-        # Since the image is neuromoprhic it shape is [batch, T, ...]
+        # Since the image is neuromorphic it shape is [batch, T, ...]
         # There we just iterate over each T, and calculate the sum of points with polarity 1
 
         # ALERT: We are calculating the sum of all the batch! So all the triggers will be in the same mask!
