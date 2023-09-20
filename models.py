@@ -30,6 +30,9 @@ def get_model(dataname='gesture', T=16, init_tau=0.02, use_plif=False, use_max_p
     elif dataname == 'gesture':
         model = DVSGestureNet(spiking_neuron=neuron.LIFNode,
                               surrogate_function=surrogate.ATan(), detach_reset=True)
+    elif dataname == 'caltech':
+        model = CaltechNet(spiking_neuron=neuron.LIFNode,
+                           surrogate_function=surrogate.ATan(), detach_reset=True)
     elif dataname == 'cifar10':
         model = CIFAR10DVSNet(spiking_neuron=neuron.LIFNode,
                               surrogate_function=surrogate.ATan(), detach_reset=True)
@@ -114,7 +117,6 @@ class Autoencoder(nn.Module):
 
 
 class AutoencoderMNIST(nn.Module):
-
     def __init__(self, channels=128, spiking_neuron: callable = None, **kwargs):
         super().__init__()
 
@@ -146,6 +148,88 @@ class AutoencoderMNIST(nn.Module):
         # x = torch.tanh(self.membrane_output_layer(x))
         x = torch.tanh(x)
         return x
+
+
+class AutoencoderCaltech(nn.Module):
+    def __init__(self, channels=128, spiking_neuron: callable = None, **kwargs):
+        super().__init__()
+
+        self.encoder = nn.Sequential(
+            layer.Conv2d(2, channels,  kernel_size=4,
+                         padding=1, stride=3, bias=False),
+            layer.BatchNorm2d(channels),
+            spiking_neuron(**deepcopy(kwargs)),
+
+            # layer.MaxPool2d(2, 2),
+            layer.Conv2d(channels, channels * 2,
+                         kernel_size=4, padding=1, stride=2, bias=False),
+            layer.BatchNorm2d(channels * 2),
+            spiking_neuron(**deepcopy(kwargs)),
+
+            # layer.MaxPool2d(2, 2),
+            layer.Conv2d(channels * 2, channels * 4,
+                         kernel_size=4, padding=1, stride=2, bias=False),
+            layer.BatchNorm2d(channels * 4),
+            spiking_neuron(**deepcopy(kwargs)),
+
+        )
+        self.decoder = nn.Sequential(
+            layer.ConvTranspose2d(
+                channels * 4, channels * 2,  kernel_size=4, padding=1, stride=2, bias=False),
+            layer.BatchNorm2d(channels * 2),
+            spiking_neuron(**deepcopy(kwargs)),
+
+            layer.ConvTranspose2d(channels * 2, channels,
+                                  kernel_size=4, padding=1, stride=2, bias=False),
+            layer.BatchNorm2d(channels),
+            spiking_neuron(**deepcopy(kwargs)),
+
+            layer.ConvTranspose2d(
+                channels, 2,  kernel_size=4, padding=1, stride=3, bias=False, output_padding=1),
+            spiking_neuron(**deepcopy(kwargs)),
+        )
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        x = torch.tanh(x)
+        return x
+    
+class CaltechNet(nn.Module):
+    def __init__(self, channels=128, spiking_neuron: callable = None, *args, **kwargs):
+        super().__init__()
+
+        conv = []
+        for i in range(5):
+            if conv.__len__() == 0:
+                in_channels = 2
+            else:
+                in_channels = channels
+
+            conv.append(layer.Conv2d(in_channels, channels,
+                        kernel_size=3, padding=1, bias=False))
+            conv.append(layer.BatchNorm2d(channels))
+            conv.append(spiking_neuron(*args, **kwargs))
+            conv.append(layer.MaxPool2d(2, 2))
+
+        self.conv_fc = nn.Sequential(
+            *conv,
+
+            layer.Flatten(),
+            layer.Dropout(0.5),
+            layer.Linear(3200, 2048),
+            spiking_neuron(*args, **kwargs),
+
+            layer.Dropout(0.5),
+            layer.Linear(2048, 1010),
+            spiking_neuron(*args, **kwargs),
+
+            # This is not related to the number of classes
+            layer.VotingLayer(10)
+        )
+
+    def forward(self, x: torch.Tensor):
+        return self.conv_fc(x)
 
 
 class DVSGestureNet(nn.Module):
