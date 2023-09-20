@@ -75,8 +75,7 @@ def train(model, train_loader, optimizer, criterion, device, scaler=None, schedu
         # If label is not one-hot,
         if len(label.shape) == 1:
             label = F.one_hot(label, n_classes).float()
-        # Rember to have the float() here
-        # label = F.one_hot(label, 11).float()
+
         if scaler is not None:
             with amp.autocast():
                 # Mean is important; (https://spikingjelly.readthedocs.io/zh_CN/latest/activation_based_en/conv_fashion_mnist.html)
@@ -158,14 +157,6 @@ def train_adaptive(model, clean_trainloader, bk_trainloader, optimizer, criterio
             latent_clean, out_clean = model(clean_frame)
             out_clean = out_clean.mean(0)
             loss_clean = criterion(out_clean, clean_label)
-
-            # Calculate the latent distance using MSE
-            # Maybe here we should consider using;
-            # latent_distance = F.cosine_similarity(K * latent_bk, latent_clean)
-            # loss = loss_bk + (lamda * latent_distance) + loss_clean
-            # I also think that we could create another adaptive apprioach. Since FP check for the high activation neurons
-            # we could take a pretrained model, and then retrain ensuring that all the neuron in the las conv layer (which is the one used by FP)
-            # have the same activation value. Way may ensure that we are only changing the neurons of the last conv layer. while freezing the rest
 
             latent_distance = F.mse_loss(latent_bk, latent_clean)
             loss = loss_bk + (K * latent_distance) + loss_clean
