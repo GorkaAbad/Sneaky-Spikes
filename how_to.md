@@ -9,7 +9,14 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
+## Hardware requirements
+
+In order to run the code a GPU is strongly recommended. 
+The code is tested on a machine with 1 NVIDIA A100 GPUs with 40GB.
+
 ## Examples
+
+Script examples for different datasets are provided in the `scripts` folder. 
 
 Get help:
 ```bash
@@ -109,7 +116,7 @@ optional arguments:
                         The index of the trigger label
   --momentum MOMENTUM   Momentum
   --alpha ALPHA         Alpha
-  --beta BETA           Beta
+  --beta BETA           Beta. Gamma in the paper
   --data_dir DATA_DIR   Data directory
   --save_path SAVE_PATH
                         Path to save the experiments
