@@ -76,7 +76,7 @@ Get help:
 ```bash
 python main.py --help
 
-usage: main.py [-h] [--model MODEL] [--dataset DATASET] [--lr LR] [--batch_size BATCH_SIZE] [--epochs EPOCHS] [--T T]
+usage: main.py [-h] [--dataset DATASET] [--lr LR] [--batch_size BATCH_SIZE] [--epochs EPOCHS] [--T T]
                [--amp] [--cupy] [--loss {mse,cross}] [--optim {adam,sgd}] [--trigger_label TRIGGER_LABEL]
                [--polarity {0,1,2,3}] [--trigger_size TRIGGER_SIZE] [--epsilon EPSILON]
                [--pos {top-left,top-right,bottom-left,bottom-right,middle,random}] [--type {static,moving,smart}]
@@ -85,7 +85,6 @@ usage: main.py [-h] [--model MODEL] [--dataset DATASET] [--lr LR] [--batch_size 
 
 optional arguments:
   -h, --help            show this help message and exit
-  --model MODEL         Model name to use
   --dataset DATASET     Dataset to use
   --lr LR               Learning rate
   --batch_size BATCH_SIZE
@@ -114,7 +113,7 @@ optional arguments:
   --save_path SAVE_PATH
                         Path to save the experiments
   --model_path MODEL_PATH
-                        Clean model path for dynamic attack
+                        Use a pretrained model
   --seed SEED           Random seed
 
 ```

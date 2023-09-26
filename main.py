@@ -50,7 +50,7 @@ parser.add_argument('--data_dir', type=str,
 parser.add_argument('--save_path', type=str,
                     default='experiments', help='Path to save the experiments')
 parser.add_argument('--model_path', type=str, default=None,
-                    help='Clean model path for dynamic attack')
+                    help='Use a pretrained model')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
 args = parser.parse_args()
 

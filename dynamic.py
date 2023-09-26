@@ -40,7 +40,7 @@ parser.add_argument('--trigger_label', default=0, type=int,
 parser.add_argument('--momentum', default=0.9, type=float, help='Momentum')
 parser.add_argument('--alpha', default=0.5, type=float, help='Alpha')
 parser.add_argument('--beta', default=0.1, type=float,
-                    help='Beta')
+                    help='Beta. Gamma in the paper')
 # Other
 parser.add_argument('--data_dir', type=str,
                     default='data', help='Data directory')
