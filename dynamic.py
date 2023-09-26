@@ -348,7 +348,6 @@ def main():
         os.makedirs(path_figs)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # device = torch.device('cpu')
     print(f'Using device {device}')
 
     clsmodel = get_model(args.dataset, args.T)

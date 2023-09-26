@@ -10,8 +10,6 @@ import random
 import cupy
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='resnet18',
-                    help='Model name to use')
 parser.add_argument('--dataset', type=str,
                     default='gesture', help='Dataset to use')
 parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')

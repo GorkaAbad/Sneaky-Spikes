@@ -1,5 +1,3 @@
-from traceback import print_tb
-from matplotlib.pyplot import sca
 import torch.nn as nn
 from torch import optim
 import torch
@@ -266,7 +264,6 @@ def save_experiments(args, train_acc, train_loss, test_acc_clean, test_loss_clea
 
     # Create a folder for the experiment, named after the experiment
     path = path_name(args)
-    #path = f'experiments/{args.dataname}_{args.model}_{args.epsilon}_{args.pos}_{args.shape}_{args.trigger_size}_{args.trigger_label}'
     if not os.path.exists(path):
         os.makedirs(path)
 

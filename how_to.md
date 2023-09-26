@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Install SpikingJelly repo from [here](https://spikingjelly.readthedocs.io), or install it using pip (included the requirements):
+Install SpikingJelly repo from [here](https://spikingjelly.readthedocs.io), or install it using pip (included in the requirements):
 
 Install the requirements:
 ```bash
@@ -65,12 +65,12 @@ The code is tested on a machine with 1 NVIDIA A100 GPUs with 40GB.
 
 ## Reading the results
 
-After execution, the results are saved in a `.csv` file in the `experiments` folder.
+After execution, the results are saved in a `.csv` file in the `experiments/` folder.
 The `.csv` file will contain all the execution parameters and the results of the attack, i.e., clean accuracy and backdoor accuracy.
 
 ## Examples
 
-Script examples for different datasets are provided in the `scripts` folder. 
+Script examples for different datasets are provided in the `scripts/` folder. 
 
 Get help:
 ```bash
