@@ -1,0 +1,9 @@
+spikingjelly
+matplotlib
+numpy
+pandas
+seaborn
+rarfile
+unrar
+scikit-image
+# cupy

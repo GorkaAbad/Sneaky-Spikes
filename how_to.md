@@ -2,17 +2,71 @@
 
 ## Requirements
 
-Install SpikingJelly repo from [here](https://spikingjelly.readthedocs.io).
+Install SpikingJelly repo from [here](https://spikingjelly.readthedocs.io), or install it using pip (included the requirements):
 
 Install the requirements:
 ```bash
 pip install -r requirements.txt
 ```
 
+## Preparing the datasets
+
+Some datasets are automatically downloaded. But some other have to be downloaded manually. This is a [restriction](https://spikingjelly.readthedocs.io/zh_CN/latest/activation_based_en/neuromorphic_datasets.html) from the SpikingJelly repo.
+
+Create a `data/` folder in the root of the project:
+```bash
+mkdir data
+```
+
+### N-MNIST
+
+N-MNIST **cannot** be downloaded automatically. You have to download it manually from [here](https://www.garrickorchard.com/datasets/n-mnist).
+Then, create a folder with the name `mnist` in the `data` folder and put the downloaded files in it.
+```bash	
+mkdir data/mnist
+```
+
+And put the dataset (`.zip` file) in it.
+SpikingJelly will automatically unzip the files (creating a `extracted/` folder), and do the rest of the work.
+
+### CIFAR10-DVS
+
+CIFAR10-DVS **can** be downloaded automatically. You just have to create a folder with the name `cifar10` in the `data` folder.
+```bash
+mkdir data/cifar10
+```
+
+### DVS128 Gesture
+
+DVS128 Gesture **cannot** be downloaded automatically. You have to download it from [here](https://ibm.ent.box.com/s/3hiq58ww1pbbjrinh367ykfdf60xsfm8/folder/50167556794).
+Then, create a folder with the name `gesture` in the `data` folder and put the downloaded files in it.
+
+```bash
+mkdir data/gesture
+```
+
+And put the dataset (`.gz` file) in it.
+
+### N-Caltech101
+
+N-Caltech101 **cannot** be downloaded automatically. You have to download it from [here](https://www.garrickorchard.com/datasets/n-caltech101).
+Then, create a folder with the name `caltech` in the `data` folder and put the downloaded files in it.
+
+```bash
+mkdir data/caltech
+```
+
+And put the dataset (`.zip` file) in it.
+
 ## Hardware requirements
 
 In order to run the code a GPU is strongly recommended. 
 The code is tested on a machine with 1 NVIDIA A100 GPUs with 40GB.
+
+## Reading the results
+
+After execution, the results are saved in a `.csv` file in the `experiments` folder.
+The `.csv` file will contain all the execution parameters and the results of the attack, i.e., clean accuracy and backdoor accuracy.
 
 ## Examples
 
