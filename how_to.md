@@ -181,3 +181,11 @@ Example of running a dynamic trigger attack on N-MNIST dataset:
 ```bash
 python dynamic.py --dataset mnist --cupy --epochs 10 --train_epochs 1 --alpha 0.5 --beta 0.01
 ```
+
+## Authors
+
+To be defined.
+
+## How to cite
+
+To be defined.
