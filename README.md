@@ -52,3 +52,16 @@ Guide to the code is available [here](how_to.md).
 | Noise            	|   ![noise](./figures/dynamic/noise_0.1_dynamic.gif)	|  ![noise](./figures/dynamic/noise_0.05_dynamic.gif) 	|  ![noise](./figures/dynamic/noise_0.01_dynamic.gif) 	|
 | Projected  Noise 	|  ![projection](./figures/dynamic/noise_proj_0.1_dynamic.gif) 	|   ![projection](./figures/dynamic/noise_proj_0.05_dynamic.gif)	|  ![projection](./figures/dynamic/noise_proj_0.01_dynamic.gif) 	|
 | Backdoor image   	|   ![bk image](./figures/dynamic/bk_0.1_dynamic.gif)	|   ![bk image](./figures/dynamic/bk_0.05_dynamic.gif)	|   ![bk image](./figures/dynamic/bk_0.01_dynamic.gif)	|
+
+
+## Authors
+
+Keeping anonymity.
+
+## How to cite
+
+Keeping anonymity.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ## Preparing the datasets
 
-Some datasets are automatically downloaded. But some other have to be downloaded manually. This is a [restriction](https://spikingjelly.readthedocs.io/zh_CN/latest/activation_based_en/neuromorphic_datasets.html) from the SpikingJelly repo.
+Some datasets are automatically downloaded. But some others have to be downloaded manually. This is a [restriction](https://spikingjelly.readthedocs.io/zh_CN/latest/activation_based_en/neuromorphic_datasets.html) from the SpikingJelly repo.
 
 Create a `data/` folder in the root of the project:
 ```bash
@@ -181,11 +181,3 @@ Example of running a dynamic trigger attack on N-MNIST dataset:
 ```bash
 python dynamic.py --dataset mnist --cupy --epochs 10 --train_epochs 1 --alpha 0.5 --beta 0.01
 ```
-
-## Authors
-
-To be defined.
-
-## How to cite
-
-To be defined.
