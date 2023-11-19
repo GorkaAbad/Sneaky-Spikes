@@ -60,12 +60,14 @@ Gorka Abad, Oguzhan Ersoy, Stjepan Picek, and Aitor Urbieta.
 
 ## How to cite
 
+```
 @inproceedings{abad2024sneaky,
   title={Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data.},
   author={Abad, Gorka and Ersoy, Oguzhan and Picek, Stjepan and Urbieta, Aitor.},
   booktitle={NDSS},
   year={2024}
 }
+```
 
 ## License
 
