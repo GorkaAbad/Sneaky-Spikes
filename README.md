@@ -1,4 +1,4 @@
-# Sneaky-Spikes
+# Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data
 
 Corresponding code for the paper: "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data", at Network and Distributed System Security (NDSS).
 
