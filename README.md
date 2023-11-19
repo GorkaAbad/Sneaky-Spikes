@@ -1,6 +1,6 @@
 # Sneaky-Spikes
 
-Code for the paper "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data".
+Corresponding code for the paper: "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data", at Network and Distributed System Security (NDSS).
 
 Guide to the code is available [here](how_to.md).
 
@@ -56,11 +56,16 @@ Guide to the code is available [here](how_to.md).
 
 ## Authors
 
-Keeping anonymity.
+Gorka Abad, Oguzhan Ersoy, Stjepan Picek, and Aitor Urbieta.
 
 ## How to cite
 
-Keeping anonymity.
+@inproceedings{abad2024sneaky,
+  title={Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data.},
+  author={Abad, Gorka and Ersoy, Oguzhan and Picek, Stjepan and Urbieta, Aitor.},
+  booktitle={NDSS},
+  year={2024}
+}
 
 ## License
 
