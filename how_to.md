@@ -17,6 +17,10 @@ Create a `data/` folder in the root of the project:
 ```bash
 mkdir data
 ```
+Then, the datasets should be placed in the following format:
+`data/<dataset>/download/`
+
+Check the following section for more details about specific datasets.
 
 ### N-MNIST
 
