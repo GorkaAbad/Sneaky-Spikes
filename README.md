@@ -46,7 +46,7 @@ Guide to the code is available [here](how_to.md).
 
 #### Dynamic Examples
 
-|       $$\gamma$$            |   0.1	|   0.05	|  0.01 	|
+|       γ            |   0.1	|   0.05	|  0.01 	|
 |------------------	|---	|---	|---	|
 | Clean image 	|  ![clean image](./figures/dynamic/clean_0.1_dynamic.gif) | ![clean image](./figures/dynamic/clean_0.05_dynamic.gif) 	|   ![clean image](./figures/dynamic/clean_0.01_dynamic.gif)	|
 | Noise            	|   ![noise](./figures/dynamic/noise_0.1_dynamic.gif)	|  ![noise](./figures/dynamic/noise_0.05_dynamic.gif) 	|  ![noise](./figures/dynamic/noise_0.01_dynamic.gif) 	|
