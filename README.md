@@ -2,7 +2,7 @@
 
 Corresponding code for the paper: "Sneaky Spikes: Uncovering Stealthy Backdoor Attacks in Spiking Neural Networks with Neuromorphic Data", at Network and Distributed System Security (NDSS) 2024.
 
-Guide to the code is available [here](how_to.md).
+A guide to the code is available [here](how_to.md).
 
 ## Examples
 
